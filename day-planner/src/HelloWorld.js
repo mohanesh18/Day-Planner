@@ -16,13 +16,25 @@ class HelloWorld extends Component{
       }
     render(){
         return (
-            <div className = "HelloWorld"> 
-                {this.state.greeting} 
-                {this.props.name}! 
-                <br/>
-                <button onClick = {this.frenchify}>Frenchify!</button>
-                <button onClick={this.removeGreeting}>Remove Me!</button>
-            </div>
+            <section>
+                <ul>
+                    <li>
+                        <div>   
+                            <input type = "checkbox" class = "toggle-button"></input>
+                            <label>Text</label>
+                            <button>Delete</button>
+                        </div>                
+                        {/* <input class = "edit" style = "display:none;"></input> */}
+                    </li>           
+                </ul>    
+            </section>
+            // <div className = "HelloWorld"> 
+            //     {this.state.greeting} 
+            //     {this.props.name}! 
+            //     <br/>
+            //     <button onClick = {this.frenchify}>Rename!</button>
+            //     <button onClick={this.removeGreeting}>Remove task!</button>
+            // </div>
 
         ); 
     }

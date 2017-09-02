@@ -11,10 +11,16 @@ class HelloWorldList extends Component{
     }
     render(){
         return(
-            <div className="HelloWorldList">
-                <AddGreeter addGreeting={this.addGreeting}/>
-               {this.renderGreetings()}
-          </div>
+            //<h1>Today</h1>
+            <div class = "record-container">
+                <div class = "data-record">
+                    <input class = "new-todo" placeholder="What needs to done?"></input>
+                </div>    
+            </div>
+        //     <div className="HelloWorldList">
+        //         <AddGreeter addGreeting={this.addGreeting}/>
+        //        {this.renderGreetings()}
+        //   </div>
         )
     }
     renderGreetings(){
