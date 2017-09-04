@@ -1,0 +1,9 @@
+.overal-container{
+    min-width: 230px;
+    max-width: 550px;
+    margin: 130px auto;
+    
+}
+.overal-container h1{
+    text-align: center;
+}

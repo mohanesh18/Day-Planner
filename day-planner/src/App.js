@@ -21,6 +21,7 @@
 // export default App;
 
 import React from 'react';
+import DateList from './DateList';
 import HelloWorld from './HelloWorld';
 import HelloWorldList from './HelloWorldList';
 import './App.css';
@@ -28,7 +29,8 @@ import './App.css';
 const App = () => {
   return (
     <div className="App">
-      <HelloWorldList />
+      {/* <HelloWorldList /> */}
+      <DateList/>
     </div>
   );
 }
