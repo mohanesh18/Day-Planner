@@ -22,8 +22,6 @@
 
 import React from 'react';
 import DateList from './DateList';
-import HelloWorld from './HelloWorld';
-import HelloWorldList from './HelloWorldList';
 import './App.css';
 
 const App = () => {
