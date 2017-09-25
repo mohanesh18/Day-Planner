@@ -22,6 +22,7 @@
 
 import React from 'react';
 import DateList from './DateList';
+import fire  from './Fire';
 import './App.css';
 
 const App = () => {

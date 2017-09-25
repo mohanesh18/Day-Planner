@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
+import fire from './Fire';
 import Task from './Task';
 import './TaskList.css';
 
 class TaskList extends Component{
     constructor(props){
         super(props);
+        let messagesRef = fire.database().ref('tasks').orderByKey().limitToLast(100);
+        console.info(messagesRef);
         this.state = {
             taskID: this.props.listID,
             tasks: [{name: 'Jim', isCompleted: false},{name: 'Sally', isCompleted: true}, {name: 'Blender', isCompleted: true}], 
