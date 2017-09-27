@@ -6,11 +6,9 @@ import './TaskList.css';
 class TaskList extends Component{
     constructor(props){
         super(props);
-        let messagesRef = fire.database().ref('tasks').orderByKey().limitToLast(100);
-        console.info(messagesRef);
         this.state = {
             taskID: this.props.listID,
-            tasks: [{name: 'Jim', isCompleted: false},{name: 'Sally', isCompleted: true}, {name: 'Blender', isCompleted: true}], 
+            tasks: [], 
             newTaskName: {name: '', isCompleted: false}
         };
         this.addNewTask = this.addNewTask.bind(this);
@@ -19,12 +17,30 @@ class TaskList extends Component{
         this.removeTask = this.removeTask.bind(this);
 
     }
+    componentWillMount(){
+        
+        let tasksRef = fire.database().ref('/tasks/'+ this.props.listID);
+        tasksRef.once('value').then(function(snapshot) {
+            //var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+            console.info(snapshot.val());
+            // ...;
+        });    
+        console.info(tasksRef);
+        tasksRef.on('child_added', snapshot => {
+            /* Update React state when task is added at Firebase Database */
+            let task = { name: snapshot.val().name, isCompleted: snapshot.val().isCompleted, 
+                id: snapshot.key };
+                console.info(snapshot.val());
+            //this.setState({ tasks: [task].concat(this.state.tasks) });
+          })
+    }
     handleUpdate(event){
         this.setState({newTaskName: {name: event.target.value, isCompleted: false}});
         console.info(this.state.newTaskName);
     }
     addNewTask(newName){
-        this.setState({tasks: [...this.state.tasks, this.state.newTaskName]});
+        let a = fire.database().ref('tasks').push( this.state.newTaskName );
+        //this.setState({tasks: [...this.state.tasks, this.state.newTaskName]});
         this.setState({newTaskName: {name: ''}});
     }
     _handleKeyPress = (e) =>{
@@ -40,7 +56,6 @@ class TaskList extends Component{
     }
 
     renderTasks(){
-        console.info(this.state.tasks)
         return this.state.tasks.map(obj =>(
             <Task key = {obj.name} name = {obj.name} isCompleted = {obj.isCompleted} id = {this.state.taskID}
             removeTask={this.removeTask}
