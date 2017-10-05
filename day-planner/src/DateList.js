@@ -11,18 +11,15 @@ class DateList extends Component{
  }
  componentWillMount(){
     let datesRef = fire.database().ref('dates').orderByKey().limitToLast(100);
-    console.info(datesRef);
-    datesRef.on('child_added', snapshot => {    
-        let keys = Object.keys(snapshot.val().taskIDs);
-        
-        // for(index=0;index<keys.length;index++)
-        // {
-        //    console.log(keys[index]);
-        // }
-        
-        /* Update React state when task is added at Firebase Database */
-        this.setState({ taskListData: keys.concat(this.state.taskListData) });
-    })   
+    datesRef.once('value').then((snapshot) => {
+        if(snapshot.val()){
+            Object.keys(snapshot.val()).map(key => {
+                var newArray = []
+                newArray.push(key);
+                this.setState({taskListData:newArray.concat(this.state.taskListData)})
+            })
+        }
+    }); 
  }
  renderTaskList(){
     return this.state.taskListData.map(val=>(

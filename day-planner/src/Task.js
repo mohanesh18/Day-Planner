@@ -9,7 +9,6 @@ class Task extends Component{
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     }
     componentWillReceiveProps(props){
-        //console.info(props);
     }
     removeTask(){
         this.props.removeTask(this.props.name);

@@ -7,7 +7,6 @@ class TaskList extends Component{
     constructor(props){
         super(props);
         this.state = {
-            taskID: this.props.listID,
             tasks: [], 
             newTaskName: {name: '', isCompleted: false}
         };
@@ -18,28 +17,55 @@ class TaskList extends Component{
 
     }
     componentWillMount(){
-        
-        let tasksRef = fire.database().ref('/tasks/'+ this.props.listID);
-        tasksRef.once('value').then(function(snapshot) {
-            //var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-            console.info(snapshot.val());
-            // ...;
-        });    
-        console.info(tasksRef);
-        tasksRef.on('child_added', snapshot => {
+        let dateRef = fire.database().ref('/dates/'+ this.props.listID);
+        dateRef.once('value').then((snapshot) => {
+            if(snapshot.val()){
+                let keys = Object.keys(snapshot.val().taskIDs); 
+                let index;
+                let task=[];
+                for(index=0;index<keys.length;index++){
+                    let taskRef = fire.database().ref('/tasks/'+ keys[index]);
+                    taskRef.once('value').then((record) => {
+                        if(record.val()){
+                            task.push({ name: record.val().name, isCompleted: record.val().isCompleted, 
+                                id: record.key });
+                            this.setState({ tasks: task });
+                        }                        
+                    });
+                }
+            }    
+        });
+        let datesRef = fire.database().ref('dates').orderByKey().limitToLast(100);    
+        datesRef.on('child_changed', snapshot => {
+            let keys = Object.keys(snapshot.val().taskIDs); 
+            let index;
+            let task=[];
+            for(index=0;index<keys.length;index++){
+                let taskRef = fire.database().ref('/tasks/'+ keys[index]);
+                taskRef.once('value').then((record) => {
+                    if(record.val()){
+                        task.push({ name: record.val().name, isCompleted: record.val().isCompleted, 
+                            id: record.key });
+                        this.setState({ tasks: task });    
+                    }                        
+                });
+            }    
+            //let taskRef = fire.database().ref('/tasks/'+ keys[index]);
+            //console.info(snapshot.val())
             /* Update React state when task is added at Firebase Database */
-            let task = { name: snapshot.val().name, isCompleted: snapshot.val().isCompleted, 
-                id: snapshot.key };
-                console.info(snapshot.val());
-            //this.setState({ tasks: [task].concat(this.state.tasks) });
+            // let task = { name: snapshot.val().name, isCompleted: snapshot.val().isCompleted, 
+            //     id: snapshot.key };
+            // this.setState({ tasks: [task].concat(this.state.tasks) });
           })
     }
     handleUpdate(event){
         this.setState({newTaskName: {name: event.target.value, isCompleted: false}});
-        console.info(this.state.newTaskName);
     }
     addNewTask(newName){
         let a = fire.database().ref('tasks').push( this.state.newTaskName );
+        let updates = {};
+        updates[a.key] = true;        
+        let b = fire.database().ref('/dates/'+ this.props.listID).child('taskIDs').update(updates);
         //this.setState({tasks: [...this.state.tasks, this.state.newTaskName]});
         this.setState({newTaskName: {name: ''}});
     }
@@ -57,7 +83,7 @@ class TaskList extends Component{
 
     renderTasks(){
         return this.state.tasks.map(obj =>(
-            <Task key = {obj.name} name = {obj.name} isCompleted = {obj.isCompleted} id = {this.state.taskID}
+            <Task key = {obj.id} name = {obj.name} isCompleted = {obj.isCompleted}
             removeTask={this.removeTask}
             />
         ));
