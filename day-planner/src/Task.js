@@ -13,7 +13,8 @@ class Task extends Component{
     }
     removeTask(){
         this.props.removeTask(this.props.name);
-        return fire.database().ref('/tasks/'+ this.props.id).remove();
+        let a =  fire.database().ref('/tasks/'+ this.props.id).remove();
+        let dateRef = fire.database().ref('/dates/'+ this.props.dateID+ '/taskIDs/').child(this.props.id).remove();
     }
 
     handleCheckboxChange(ev){

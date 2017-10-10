@@ -34,22 +34,6 @@ class TaskList extends Component{
                 }
             }    
         });
-        let datesRef = fire.database().ref('dates').orderByKey().limitToLast(100);
-        datesRef.on('child_changed', snapshot => {
-            let keys = Object.keys(snapshot.val().taskIDs);
-            let index;
-            let task=[];
-            for(index=0;index<keys.length;index++){
-                let taskRef = fire.database().ref('/tasks/'+ keys[index]);
-                taskRef.once('value').then((record) => {
-                    if(record.val()){
-                        task.push({ name: record.val().name, isCompleted: record.val().isCompleted, 
-                            id: record.key });
-                        this.setState({ tasks: task });    
-                    }                        
-                });
-            }
-          })
     }
     handleUpdate(event){
         this.setState({newTaskName: {name: event.target.value, isCompleted: false}});
@@ -57,10 +41,13 @@ class TaskList extends Component{
     addNewTask(newName){
         let a = fire.database().ref('tasks').push( this.state.newTaskName );
         let updates = {};
-        updates[a.key] = true;        
-        let b = fire.database().ref('/dates/'+ this.props.listID).child('taskIDs').update(updates);
-        //this.setState({tasks: [...this.state.tasks, this.state.newTaskName]});
-        this.setState({newTaskName: {name: ''}});
+        updates[a.key] = true;
+        let b = fire.database().ref('/dates/'+ this.props.listID).child('taskIDs').update(updates).then(()=>{
+            this.setState({newTaskName: {name: this.state.newTaskName.name, isCompleted: false, id: a.key}})
+            this.setState({tasks: [...this.state.tasks, this.state.newTaskName]});
+            this.setState({newTaskName: {name: ''}});
+        });
+        
     }
     _handleKeyPress = (e) =>{
         if(e.key === "Enter"){
@@ -76,7 +63,7 @@ class TaskList extends Component{
 
     renderTasks(){
         return this.state.tasks.map(obj =>(
-            <Task key = {obj.id} name = {obj.name} isCompleted = {obj.isCompleted} id = {obj.id}
+            <Task key = {obj.id} name = {obj.name} isCompleted = {obj.isCompleted} id = {obj.id} dateID = {this.props.listID}
             removeTask={this.removeTask}
             />
         ));
