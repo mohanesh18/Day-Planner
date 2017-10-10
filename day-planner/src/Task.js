@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import fire from './Fire';
 import './Task.css';
 
 class Task extends Component{
@@ -12,9 +13,13 @@ class Task extends Component{
     }
     removeTask(){
         this.props.removeTask(this.props.name);
+        return fire.database().ref('/tasks/'+ this.props.id).remove();
     }
+
     handleCheckboxChange(ev){
         this.setState({isCompleted: ev.target.checked});
+        return fire.database().ref('/tasks/'+ this.props.id).update({isCompleted: ev.target.checked});
+        
     }
     render(){
         return(<section>

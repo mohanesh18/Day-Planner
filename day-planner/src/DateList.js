@@ -6,7 +6,6 @@ import './DateList.css';
 class DateList extends Component{
  constructor(props){
     super(props);
-    //this.renderTaskList = this.renderTaskList.bind(this);
     this.state = {taskListData: []};
  }
  componentWillMount(){

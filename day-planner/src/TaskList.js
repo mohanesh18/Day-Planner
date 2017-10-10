@@ -12,7 +12,6 @@ class TaskList extends Component{
         };
         this.addNewTask = this.addNewTask.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
-        //this.renderTasks = this.renderTasks.bind(this);
         this.removeTask = this.removeTask.bind(this);
 
     }
@@ -29,15 +28,15 @@ class TaskList extends Component{
                         if(record.val()){
                             task.push({ name: record.val().name, isCompleted: record.val().isCompleted, 
                                 id: record.key });
-                            this.setState({ tasks: task });
+                            this.setState({ tasks: task }); 
                         }                        
                     });
                 }
             }    
         });
-        let datesRef = fire.database().ref('dates').orderByKey().limitToLast(100);    
+        let datesRef = fire.database().ref('dates').orderByKey().limitToLast(100);
         datesRef.on('child_changed', snapshot => {
-            let keys = Object.keys(snapshot.val().taskIDs); 
+            let keys = Object.keys(snapshot.val().taskIDs);
             let index;
             let task=[];
             for(index=0;index<keys.length;index++){
@@ -49,13 +48,7 @@ class TaskList extends Component{
                         this.setState({ tasks: task });    
                     }                        
                 });
-            }    
-            //let taskRef = fire.database().ref('/tasks/'+ keys[index]);
-            //console.info(snapshot.val())
-            /* Update React state when task is added at Firebase Database */
-            // let task = { name: snapshot.val().name, isCompleted: snapshot.val().isCompleted, 
-            //     id: snapshot.key };
-            // this.setState({ tasks: [task].concat(this.state.tasks) });
+            }
           })
     }
     handleUpdate(event){
@@ -83,7 +76,7 @@ class TaskList extends Component{
 
     renderTasks(){
         return this.state.tasks.map(obj =>(
-            <Task key = {obj.id} name = {obj.name} isCompleted = {obj.isCompleted}
+            <Task key = {obj.id} name = {obj.name} isCompleted = {obj.isCompleted} id = {obj.id}
             removeTask={this.removeTask}
             />
         ));
