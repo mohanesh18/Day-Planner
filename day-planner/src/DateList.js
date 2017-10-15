@@ -6,6 +6,7 @@ import './DateList.css';
 class DateList extends Component{
  constructor(props){
     super(props);
+    console.info(this.props.currUser);
     this.state = {taskListData: []};
  }
  componentWillMount(){
@@ -13,16 +14,16 @@ class DateList extends Component{
     datesRef.once('value').then((snapshot) => {
         if(snapshot.val()){
             Object.keys(snapshot.val()).map(key => {
-                var newArray = []
-                newArray.push(key);
+                var newArray = [];
+                newArray.push({id: key, name: snapshot.val()[key].name});
                 this.setState({taskListData:newArray.concat(this.state.taskListData)})
             })
         }
     }); 
  }
  renderTaskList(){
-    return this.state.taskListData.map(val=>(
-        <TaskList key = {val} listID = {val}/>
+    return this.state.taskListData.map(obj=>(
+        <TaskList key = {obj.id} listID = {obj.id} dateName = {obj.name}/>
     ));
  }
     render(){

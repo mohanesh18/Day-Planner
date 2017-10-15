@@ -72,7 +72,7 @@ class TaskList extends Component{
         return(
             
             <div className = "date-container">
-                <h1> Day {this.props.listID} </h1>
+                <h1>{this.props.dateName} </h1>
                 <div className = "record-container">
                     <div className="data-record">
                         <input type = "text" onChange={this.handleUpdate} onKeyPress={this._handleKeyPress} className="new-todo" placeholder="What needs to done?" value={this.state.newTaskName.name}/>
